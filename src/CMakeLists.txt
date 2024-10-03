@@ -12,7 +12,7 @@ message(STATUS "Install dir set as ${EXECUTABLE_DIR}")
 add_subdirectory(imgui)
 
 ## Set SRC_SOURCES to be all .cpp files in current dir
-file(GLOB SRC_SOURCES "*.cpp")
+file(GLOB SRC_SOURCES "*.cpp" "*.c")
 
 add_executable(${EXECUTABLE_NAME}
                ${SRC_SOURCES})

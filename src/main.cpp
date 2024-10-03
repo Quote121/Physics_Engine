@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 
-int main(int argc, char** argv)
+int main(int argv, char* args[])
 {
     std::cout << "Hello, world!" << std::endl;
     return 0;

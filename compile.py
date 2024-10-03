@@ -4,10 +4,13 @@ import subprocess
 import shutil
 import argparse
 
+
 EXECNAME = "physicsMain.exe"
 BUILDDIR = "build"
+EXECPATH = f"./{BUILDDIR}/src/{EXECNAME}"
 WINDOWS: bool
 LINUX: bool
+
 
 ## My overrided print
 def write(msg: str) -> None:
@@ -57,7 +60,6 @@ def main(parser: argparse.ArgumentParser) -> None:
     if not (os.path.exists(f"./{BUILDDIR}/")):
         verbose("Build dir not found, creating.")
         os.mkdir(f"./{BUILDDIR}/")
-        
     else:
         verbose("Build dir found.")
         
@@ -68,7 +70,8 @@ def main(parser: argparse.ArgumentParser) -> None:
     if WINDOWS:
         cmakeArgs = ""
 
-        if (args.debug):
+        ## Debug is needed if we are using gdb too
+        if (args.debug or args.gdb):
             cmakeArgs += "-DCMAKE_BUILD_TYPE=debug"
 
         ## CMake create
@@ -81,20 +84,20 @@ def main(parser: argparse.ArgumentParser) -> None:
 
     elif LINUX:
         error("Not implemented.")
+    
+    ## Leave the build dir
+    verbose(f"Exiting {BUILDDIR}/")
+    os.chdir("../")
 
     ## Run program if specified
     if (args.run):
         verbose(f"Running application {EXECNAME}")
-        subprocess.run([f"./src/{EXECNAME}"])
+        subprocess.run([f"./{EXECPATH}"])
 
     if (args.gdb):
         verbose(f"Running gdb on {EXECNAME}")
-        subprocess.run(["gdb", f"./src/{EXECNAME}"])
+        subprocess.run(["gdb", f"./{EXECPATH}"])
 
-    ## Leave the build dir
-    verbose(f"Exiting {BUILDDIR}")
-    os.chdir("../")
-    
 
 
 if __name__ == "__main__":
