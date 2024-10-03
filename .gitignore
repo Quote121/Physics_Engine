@@ -34,4 +34,4 @@
 .vscode
 
 # build files
-/build/
+build/
