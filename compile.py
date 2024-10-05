@@ -22,7 +22,7 @@ def write(msg: str) -> None:
 
 ## Will print error message and terminate process
 def error(errorMsg: str) -> None:
-    write("Error: '", errorMsg, "'")
+    write("Error: '" + errorMsg + "'")
     quit()
 
 
@@ -45,59 +45,64 @@ def clean(dir: str) -> None:
 
 
 def main(parser: argparse.ArgumentParser) -> None:
-    global args
-    args = parser.parse_args()
+    try:
+        global args
+        args = parser.parse_args()
 
-    if (args.run and args.gdb):
-        write("Cannot use 'run' and 'run gdb' at the same time.")
-        quit()
+        if (args.run and args.gdb):
+            write("Cannot use 'run' and 'run gdb' at the same time.")
+            quit()
 
-    ## Clean
-    if (args.clean):
-        clean(BUILDDIR)
+        ## Clean
+        if (args.clean):
+            clean(BUILDDIR)
 
-    ## Determine if there is a build folder, if not create it
-    if not (os.path.exists(f"./{BUILDDIR}/")):
-        verbose("Build dir not found, creating.")
-        os.mkdir(f"./{BUILDDIR}/")
-    else:
-        verbose("Build dir found.")
+        ## Determine if there is a build folder, if not create it
+        if not (os.path.exists(f"./{BUILDDIR}/")):
+            verbose("Build dir not found, creating.")
+            os.mkdir(f"./{BUILDDIR}/")
+        else:
+            verbose("Build dir found.")
+            
+        ## cd build
+        os.chdir(f"./{BUILDDIR}/")
+        verbose("Entered build dir.")
+
+        if WINDOWS:
+            cmakeArgs = ""
+
+            ## Debug is needed if we are using gdb too
+            if (args.debug or args.gdb):
+                cmakeArgs += "-DCMAKE_BUILD_TYPE=debug"
+
+            ## CMake create
+            verbose("Running cmake script.")
+            subprocess.run(["cmake", "-G", "MinGW Makefiles", "-DCMAKE_C_COMPILER=gcc", "-DCMAKE_CXX_COMPILER=g++", cmakeArgs, ".."])
+
+            ## Make
+            verbose("Running make.")
+            subprocess.run(["mingw32-make.exe"])
+
+        elif LINUX:
+            error("Not implemented.")
         
-    ## cd build
-    os.chdir(f"./{BUILDDIR}/")
-    verbose("Entered build dir.")
+        ## Leave the build dir
+        verbose(f"Exiting {BUILDDIR}/")
+        os.chdir("../")
 
-    if WINDOWS:
-        cmakeArgs = ""
+        ## Run program if specified
+        if (args.run):
+            verbose(f"Running application {EXECNAME}")
+            subprocess.run([f"./{EXECPATH}"])
 
-        ## Debug is needed if we are using gdb too
-        if (args.debug or args.gdb):
-            cmakeArgs += "-DCMAKE_BUILD_TYPE=debug"
-
-        ## CMake create
-        verbose("Running cmake script.")
-        subprocess.run(["cmake", "-G", "MinGW Makefiles", "-DCMAKE_C_COMPILER=gcc", "-DCMAKE_CXX_COMPILER=g++", cmakeArgs, ".."])
-
-        ## Make
-        verbose("Running make.")
-        subprocess.run(["mingw32-make.exe"])
-
-    elif LINUX:
-        error("Not implemented.")
+        if (args.gdb):
+            verbose(f"Running gdb on {EXECNAME}")
+            subprocess.run(["gdb", f"./{EXECPATH}"])
     
-    ## Leave the build dir
-    verbose(f"Exiting {BUILDDIR}/")
-    os.chdir("../")
-
-    ## Run program if specified
-    if (args.run):
-        verbose(f"Running application {EXECNAME}")
-        subprocess.run([f"./{EXECPATH}"])
-
-    if (args.gdb):
-        verbose(f"Running gdb on {EXECNAME}")
-        subprocess.run(["gdb", f"./{EXECPATH}"])
-
+    except KeyboardInterrupt:
+        error("Keyboard interrupt.")
+    except Exception as e:
+        error(("Exception: " + str(e)))
 
 
 if __name__ == "__main__":
