@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <ostream>
 
 class Screen
 {
@@ -15,8 +16,6 @@ public:
     static void s_SwapWindow(void) noexcept;
 
     static void s_Shutdown(void);
-
-    static void s_GetGLInfo(void);
 
     static void s_Input(void);
 

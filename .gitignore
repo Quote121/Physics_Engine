@@ -35,3 +35,6 @@
 
 # build files
 build/
+
+# Log files
+log.txt
