@@ -11,11 +11,38 @@ message(STATUS "Install dir set as ${EXECUTABLE_DIR}")
 ## Add subdirs
 add_subdirectory(imgui)
 
-## Set SRC_SOURCES to be all .cpp files in current dir
-file(GLOB SRC_SOURCES "*.cpp" "*.c")
+## Set SRC_SOURCES to be all .cpp and .c files in current dir
+# file(GLOB SRC_SOURCES "*.cpp" "*.c")
+
+## Specifically list the source files for compilation
+set(SRC_SOURCES
+    main.cpp
+    glad.c
+    log.cpp
+    screen.cpp
+    stb_image.cpp
+)
+
+set(RENDERER_SOURCES
+    renderer/shader.cpp
+)
+
+## ImGui source files
+set(IMGUI_SOURCES
+    imgui_demo.cpp
+    imgui_draw.cpp
+    imgui_impl_glfw.cpp
+    imgui_impl_opengl3.cpp
+    imgui_tables.cpp
+    imgui_widgets.cpp
+    imgui.cpp
+)
+
 
 add_executable(${EXECUTABLE_NAME}
-               ${SRC_SOURCES})
+               ${SRC_SOURCES}
+               ${RENDERER_SOURCES}
+)
 
 
 ## Setting up SDL2

@@ -4,18 +4,20 @@
 
 #include "screen.hpp"
 #include "log.hpp"
+#include "renderer/shader.hpp"
 
 int main(int argv, char* args[])
 {
     Log::Open();
     Screen::s_Initalize();
 
-
+    // Example of shader compilation
+    Shader shader("./assets/shaders/defaultShader/default.vert", "./assets/shaders/defaultShader/default.frag");
+    Shader shader2("./assets/shaders/defaultShader/default.shader");
 
     // Update window
     while (true)
     {
-
 
         Screen::s_SwapWindow();
 
