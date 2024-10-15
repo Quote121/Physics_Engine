@@ -18,7 +18,7 @@ public:
 
     static void s_SwapWindow(void) noexcept;
 
-    static void s_ClearColour(glm::vec3 colour);
+    static void s_ClearColour(const glm::vec3& colour);
 
     static void s_Shutdown(void);
 

@@ -23,15 +23,30 @@ private:
 public:
     static const hdTimePoint startTimePoint;
 
+    /// @brief Open file
     static void Open(void);
+
+    /// @brief Close file
     static void Close(void);
 
+    /// @brief Write to file (thread safe)
+    /// @param message Raw message
+    /// @param size Size of char buffer
     static void Write(const char* message, size_t size);
+    
+    /// @brief Write to file (thread safe)
+    /// @param system The system to report the error from e.g. ("Input System")
+    /// @param ...message Comma seperated list of messages 
     template<typename... Args>
     static void Write(const std::string& system, Args&&... message);
 
+    /// @brief Get string 
+    /// @param startPoint Start time to determine elapsed time
+    /// @return formatted string mm:ss:mss
     static std::string GetTimeElapsedString(hdTimePoint startPoint);
 
+    /// @brief Get a high definition of the current time point
+    /// @return Return high definition time point
     static inline hdTimePoint GetTimePointNow(void);
 };
 

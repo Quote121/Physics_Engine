@@ -102,7 +102,7 @@ void Screen::s_SwapWindow(void) noexcept
     SDL_GL_SwapWindow(s_applicationWindow);
 }
 
-void Screen::s_ClearColour(glm::vec3 colour)
+void Screen::s_ClearColour(const glm::vec3& colour)
 {
     glClearColor(colour.x, colour.y, colour.z, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
