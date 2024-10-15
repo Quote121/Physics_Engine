@@ -17,6 +17,8 @@ public:
 
     static void s_Shutdown(void);
 
+    static void s_CleanUp(void);
+
     static void s_Input(void);
 
     static bool s_GetQuitStatus(void);

@@ -20,6 +20,7 @@ set(SRC_SOURCES
     glad.c
     log.cpp
     screen.cpp
+    inputHandler.cpp    
     stb_image.cpp
 )
 

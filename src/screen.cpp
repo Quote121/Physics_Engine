@@ -7,15 +7,17 @@
 #include <cstring>
 
 
-// Define static variables
-SDL_Window* Screen::s_applicationWindow = nullptr;
-SDL_GLContext Screen::s_openGLContext = nullptr;
-bool Screen::s_quit = false;
+
 
 // Constants
 constexpr int winHeight = 720;
 constexpr int winWidth = 1280;
 constexpr Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+
+// Define static variables
+SDL_Window* Screen::s_applicationWindow = nullptr;
+SDL_GLContext Screen::s_openGLContext = nullptr;
+bool Screen::s_quit = false;
 
 bool Screen::s_Initalize(void)
 {
@@ -85,6 +87,7 @@ bool Screen::s_Initalize(void)
     return true;
 }
 
+
 void Screen::s_SwapWindow(void) noexcept
 {
     SDL_GL_SwapWindow(s_applicationWindow);
@@ -92,6 +95,12 @@ void Screen::s_SwapWindow(void) noexcept
 
 
 void Screen::s_Shutdown(void)
+{
+    s_quit = true;
+}
+
+
+void Screen::s_CleanUp(void)
 {
     SDL_DestroyWindow(s_applicationWindow);
     SDL_GL_DeleteContext(s_openGLContext);
@@ -111,6 +120,10 @@ void Screen::s_Input(void)
             std::cout << "Quit" << std::endl;
             s_quit = true;
         }
+        if (e.type == SDL_KEYDOWN)
+        {
+            std::cout << "Keydown" << std::endl;
+        }
     }
 
     // Deal with individual key presses
@@ -119,6 +132,10 @@ void Screen::s_Input(void)
     {
         std::cout << "ESC pressed" << std::endl;
         s_quit = true;
+    }
+    if (state[SDL_SCANCODE_D])
+    {
+        std::cout << "D pressed" << std::endl;
     }
 }
 

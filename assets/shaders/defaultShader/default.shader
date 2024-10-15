@@ -10,6 +10,10 @@ void main()
     FragColor = vec4(colour, 1.0);
 }
 
+
+// =============
+//    Vertex
+// =============
 #type vertex
 #version 460 core
 
