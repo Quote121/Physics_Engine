@@ -31,9 +31,9 @@ int main(int argv, char* args[])
 
     float verts[] = 
     {
-        1.0f, 0.7f, 0.0f,
-        0.0f, -0.4f, 0.0f,
-        -0.8f, 0.0f, 0.0f
+    -0.5f, -0.5f, 0.0f,
+     0.5f, -0.5f, 0.0f,
+     0.0f,  0.5f, 0.0f
     };
 
     glBindVertexArray(VAO);
@@ -69,15 +69,14 @@ int main(int argv, char* args[])
     //         " - " << deltaTime << 
     //         " - fps : " << 1/deltaTime*1000 << std::endl;
     //     }
-        Screen::s_SwapWindow();
 
-        // glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+        Screen::s_ClearColour({0.2f, 0.0f, 0.4f});
 
-        glViewport(10, 10, 1000, 1000);
+        Screen::s_UpdateViewPort();
         shader2.Use();
         glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        Screen::s_SwapWindow();
 
         inputHandler->ReadInputs();
 

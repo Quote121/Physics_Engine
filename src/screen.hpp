@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <ostream>
+#include <glm/glm.hpp>
 
 class Screen
 {
@@ -13,7 +14,11 @@ private:
 public:
     static bool s_Initalize(void);
 
+    static void s_UpdateViewPort(void);
+
     static void s_SwapWindow(void) noexcept;
+
+    static void s_ClearColour(glm::vec3 colour);
 
     static void s_Shutdown(void);
 

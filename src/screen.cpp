@@ -87,12 +87,26 @@ bool Screen::s_Initalize(void)
     return true;
 }
 
+void Screen::s_UpdateViewPort(void)
+{
+    // SDL_assert()
+    int width, height;
+    SDL_GetWindowSize(s_applicationWindow, &width, &height);
+    // SDL_DisplayMode DM;
+    // SDL_GetCurrentDisplayMode(0, &DM);
+    glViewport(0, 0, width, height);
+}
 
 void Screen::s_SwapWindow(void) noexcept
 {
     SDL_GL_SwapWindow(s_applicationWindow);
 }
 
+void Screen::s_ClearColour(glm::vec3 colour)
+{
+    glClearColor(colour.x, colour.y, colour.z, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
 
 void Screen::s_Shutdown(void)
 {
