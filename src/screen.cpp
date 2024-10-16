@@ -1,5 +1,6 @@
 #include "screen.hpp"
 #include "log.hpp"
+#include "time.hpp"
 
 #include <glad/glad.h>
 #include <sstream>
@@ -36,7 +37,7 @@ bool Screen::s_Initalize(void)
 
 
     Log::Write("SDL init", "Started");
-    auto SDLinitStartTime = Log::GetTimePointNow();
+    auto SDLinitStartTime = Time::GetTimePointNow();
 
     // Init sdl
     if (SDL_Init(SDL_INIT_VIDEO) == -1)
@@ -83,7 +84,7 @@ bool Screen::s_Initalize(void)
     ssInfo << "-----------------------------------------------------\n";
     Log::Write(ssInfo.str().c_str(), ssInfo.str().size());
 
-    Log::Write("SDL init", "Took ", Log::GetTimeElapsedString(SDLinitStartTime), " to start SDL.");
+    Log::Write("SDL init", "Took ", Time::GetTimeElapsedString(SDLinitStartTime), " to start SDL.");
     return true;
 }
 

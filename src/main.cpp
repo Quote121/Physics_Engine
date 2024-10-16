@@ -17,6 +17,7 @@
 #include "log.hpp"
 #include "renderer/shader.hpp"
 #include "inputHandler.hpp"
+#include "time.hpp"
 
 std::unique_ptr<Input> inputHandler;
 
@@ -25,9 +26,7 @@ int main(int argv, char* args[])
     Log::Open();
     Screen::s_Initalize();
 
-
     inputHandler = std::make_unique<Input>();
-
 
     // Example of shader compilation
     Shader shader("./assets/shaders/defaultShader/default.vert", "./assets/shaders/defaultShader/default.frag");
@@ -51,30 +50,11 @@ int main(int argv, char* args[])
 
     // SDL_GL_SetSwapInterval(0);
 
-    Uint64 NOW = SDL_GetPerformanceCounter();
-    Uint64 LAST = 0;
-    double deltaTime = 0;
-
     // Update window
     while (true)
     {
-        LAST = NOW;
-        NOW = SDL_GetPerformanceCounter();
-
-        deltaTime = (double)((NOW - LAST)*1000 / (double)SDL_GetPerformanceFrequency() );
-
-
-    //     static double sampleVal = 0;
-    //     sampleVal += deltaTime;
-    //     // std::cout << sampleVal << std::endl;
-    //     if (1000 < static_cast<Uint64>(sampleVal))
-    //    {
-    //         sampleVal = 0;
-    //         std::cout << SDL_GetPerformanceCounter() << 
-    //         " - " << SDL_GetPerformanceFrequency() << 
-    //         " - " << deltaTime << 
-    //         " - fps : " << 1/deltaTime*1000 << std::endl;
-    //     }
+        Time::UpdateFrameTime();
+        // std::cout << Time::GetFramesPerSecond() << std::endl;
 
         Screen::s_ClearColour({0.2f, 0.0f, 0.4f});
 

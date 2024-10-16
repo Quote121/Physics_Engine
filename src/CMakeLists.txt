@@ -22,6 +22,7 @@ set(SRC_SOURCES
     screen.cpp
     inputHandler.cpp    
     stb_image.cpp
+    time.cpp
 )
 
 set(RENDERER_SOURCES

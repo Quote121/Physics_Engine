@@ -4,11 +4,9 @@
 #include <mutex>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include "screen.hpp"
 
-#include <iostream>
-
-using hdTimePoint = std::chrono::high_resolution_clock::time_point;
 
 extern const char* logPath;
 extern const char* logFileName;
@@ -21,7 +19,7 @@ private:
     static std::ofstream fileHandle;    
 
 public:
-    static const hdTimePoint startTimePoint;
+    
 
     /// @brief Open file
     static void Open(void);
@@ -40,14 +38,7 @@ public:
     template<typename... Args>
     static void Write(const std::string& system, Args&&... message);
 
-    /// @brief Get string 
-    /// @param startPoint Start time to determine elapsed time
-    /// @return formatted string mm:ss:mss
-    static std::string GetTimeElapsedString(hdTimePoint startPoint);
 
-    /// @brief Get a high definition of the current time point
-    /// @return Return high definition time point
-    static inline hdTimePoint GetTimePointNow(void);
 };
 
 
@@ -85,7 +76,3 @@ void Log::Write(const std::string& system, Args&&... message)
 }
 
 
-inline hdTimePoint Log::GetTimePointNow(void)
-{
-    return std::chrono::high_resolution_clock::now();
-}
