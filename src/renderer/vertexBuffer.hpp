@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glad/glad.h>
+
 class VertexBuffer
 {
 private:
@@ -23,7 +25,7 @@ public:
 
     /// @brief Reserver a number of bytes in the buffer
     /// @param bytes Number of bytes to reserve
-    void VertexBuffer::CreateBuffer(const unsigned int bytes);
+    void CreateBuffer(const unsigned int bytes);
 
     /// @brief Update the current VBO with the updated data
     /// @param data data to replace

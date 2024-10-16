@@ -26,6 +26,11 @@ set(SRC_SOURCES
 
 set(RENDERER_SOURCES
     renderer/shader.cpp
+    renderer/renderer.cpp
+    renderer/indexBuffer.cpp
+    renderer/vertexArray.cpp
+    renderer/vertexBuffer.cpp
+    renderer/vertexBufferLayout.cpp
 )
 
 ## ImGui source files

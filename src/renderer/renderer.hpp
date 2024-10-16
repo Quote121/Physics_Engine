@@ -8,23 +8,12 @@
 #include "indexBuffer.hpp"
 #include "vertexBufferLayout.hpp"
 
-#include "log.hpp"
+#include "../log.hpp"
 
 #define OPENGL
 #ifdef OPENGL
 
-void HandleErrors(void)
-{
-    bool errors = false;
-    GLenum error;
-    while ((error = glGetError()) != GL_NO_ERROR)
-    {
-        errors = true;
-        Log::Write("ERROR: HandleErrors() OpenGL: ", error);
-    }
-    if (errors)
-        throw std::runtime_error("Fatal render error.");
-}
+
 
 class Renderer
 {
@@ -35,6 +24,8 @@ private:
 public:
     Renderer() : backgroundColour(glm::vec3{0.4f, 0.4f, 0.4f}) {};
 
+    /// @brief Handle OpenGL errors
+    static void HandleErrors(void);
 
     /// @brief Set the backround colour, will refersh next clear screen call
     /// @param colour Colour to set

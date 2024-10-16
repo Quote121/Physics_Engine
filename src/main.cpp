@@ -4,6 +4,15 @@
 #include <cmath>
 #include <memory>
 
+// Testing the renderer buffer classes
+#define TESTRENDERER
+#ifdef TESTRENDERER
+#include "renderer/renderer.hpp"
+#include "renderer/vertexArray.hpp"
+#include "renderer/vertexBuffer.hpp"
+#include "renderer/vertexBufferLayout.hpp"
+#endif
+
 #include "screen.hpp"
 #include "log.hpp"
 #include "renderer/shader.hpp"
@@ -24,10 +33,10 @@ int main(int argv, char* args[])
     Shader shader("./assets/shaders/defaultShader/default.vert", "./assets/shaders/defaultShader/default.frag");
     Shader shader2("./assets/shaders/defaultShader/default.shader");
 
-
-    unsigned int VAO, VBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
+    Renderer renderer;
+    VertexArray VAO;
+    VertexBuffer VBO;
+    VertexBufferLayout VBL;
 
     float verts[] = 
     {
@@ -36,12 +45,9 @@ int main(int argv, char* args[])
      0.0f,  0.5f, 0.0f
     };
 
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    VBL.AddFloat(3);
+    VBO.SetData<float>(verts, sizeof(verts));
+    VAO.AddBuffer(&VBO, &VBL);
 
     // SDL_GL_SetSwapInterval(0);
 
@@ -74,7 +80,9 @@ int main(int argv, char* args[])
 
         Screen::s_UpdateViewPort();
         shader2.Use();
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        renderer.DrawArrays(&VAO, 3);
+        // glDrawArrays(GL_TRIANGLES, 0, 3);
 
         Screen::s_SwapWindow();
 

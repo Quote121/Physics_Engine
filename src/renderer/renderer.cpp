@@ -1,6 +1,19 @@
 #include "renderer.hpp"
 
 
+void Renderer::HandleErrors(void)
+{
+    bool errors = false;
+    GLenum error;
+    while ((error = glGetError()) != GL_NO_ERROR)
+    {
+        errors = true;
+        Log::Write("ERROR: HandleErrors() OpenGL: ", std::to_string(error));
+    }
+    if (errors)
+        throw std::runtime_error("Fatal render error.");
+}
+
 void Renderer::SetClearScreenColour(const glm::vec3& colour)
 {
     backgroundColour = colour;
