@@ -24,10 +24,10 @@ public:
     /// @brief Get the number of frames per second
     static inline double GetFramesPerSecond(void);
 
-    /// @brief Get string 
+    /// @brief Get string of elapsed time. Default will do from beginning of program
     /// @param startPoint Start time to determine elapsed time
     /// @return formatted string mm:ss:mss
-    static std::string GetTimeElapsedString(const hdTimePoint startPoint);
+    static std::string GetTimeElapsedString(const hdTimePoint startPoint = Time::startTimePoint);
 
     /// @brief Get a high definition of the current time point
     /// @return Return high definition time point
