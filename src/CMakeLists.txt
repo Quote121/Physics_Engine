@@ -7,12 +7,11 @@ message(STATUS "Name set as ${EXECUTABLE_NAME}")
 set(EXECUTABLE_DIR "${CMAKE_SOURCE_DIR}/bin")
 message(STATUS "Install dir set as ${EXECUTABLE_DIR}")
 
-
 ## Add subdirs
 add_subdirectory(imgui)
 
-## Set SRC_SOURCES to be all .cpp and .c files in current dir
-# file(GLOB SRC_SOURCES "*.cpp" "*.c")
+## All includes are done relative to 
+include_directories("${CMAKE_SOURCE_DIR}/src")
 
 ## Specifically list the source files for compilation
 set(SRC_SOURCES
@@ -25,6 +24,7 @@ set(SRC_SOURCES
     time.cpp
 )
 
+## All components that are to do with the graphics API interaction
 set(RENDERER_SOURCES
     renderer/shader.cpp
     renderer/renderer.cpp
@@ -32,6 +32,10 @@ set(RENDERER_SOURCES
     renderer/vertexArray.cpp
     renderer/vertexBuffer.cpp
     renderer/vertexBufferLayout.cpp
+)
+
+set(OBJECTS_SOURCES
+    objects/gameObjects.cpp
 )
 
 ## ImGui source files
@@ -49,6 +53,7 @@ set(IMGUI_SOURCES
 add_executable(${EXECUTABLE_NAME}
                ${SRC_SOURCES}
                ${RENDERER_SOURCES}
+               ${OBJECTS_SOURCES}
 )
 
 

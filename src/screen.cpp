@@ -8,8 +8,6 @@
 #include <cstring>
 
 
-
-
 // Constants
 constexpr int winHeight = 720;
 constexpr int winWidth = 1280;
@@ -93,8 +91,6 @@ void Screen::s_UpdateViewPort(void)
     // SDL_assert()
     int width, height;
     SDL_GetWindowSize(s_applicationWindow, &width, &height);
-    // SDL_DisplayMode DM;
-    // SDL_GetCurrentDisplayMode(0, &DM);
     glViewport(0, 0, width, height);
 }
 
@@ -120,38 +116,6 @@ void Screen::s_CleanUp(void)
     SDL_DestroyWindow(s_applicationWindow);
     SDL_GL_DeleteContext(s_openGLContext);
     SDL_Quit();
-}
-
-
-void Screen::s_Input(void)
-{
-    SDL_Event e;
-
-    while (SDL_PollEvent(&e) != 0)
-    {
-        // OS wants to quit. Such as pressing close button
-        if (e.type == SDL_QUIT)
-        {
-            std::cout << "Quit" << std::endl;
-            s_quit = true;
-        }
-        if (e.type == SDL_KEYDOWN)
-        {
-            std::cout << "Keydown" << std::endl;
-        }
-    }
-
-    // Deal with individual key presses
-    const Uint8* state = SDL_GetKeyboardState(NULL);
-    if (state[SDL_SCANCODE_ESCAPE])
-    {
-        std::cout << "ESC pressed" << std::endl;
-        s_quit = true;
-    }
-    if (state[SDL_SCANCODE_D])
-    {
-        std::cout << "D pressed" << std::endl;
-    }
 }
 
 bool Screen::s_GetQuitStatus(void)

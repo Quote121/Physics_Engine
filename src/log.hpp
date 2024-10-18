@@ -15,12 +15,10 @@ class Log
 {
 private:
     static std::mutex logMux;
-
     static std::ofstream fileHandle;    
 
 public:
     
-
     /// @brief Open file
     static void Open(void);
 
@@ -37,8 +35,6 @@ public:
     /// @param ...message Comma seperated list of messages 
     template<typename... Args>
     static void Write(const std::string& system, Args&&... message);
-
-
 };
 
 

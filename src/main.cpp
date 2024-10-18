@@ -18,6 +18,7 @@
 #include "renderer/shader.hpp"
 #include "inputHandler.hpp"
 #include "time.hpp"
+#include "objects/gameObjects.hpp"
 
 std::unique_ptr<Input> inputHandler;
 
@@ -27,6 +28,16 @@ int main(int argv, char* args[])
     Screen::s_Initalize();
 
     inputHandler = std::make_unique<Input>();
+
+    // Register the MeshObject creation
+    GameObjectFactory::RegisterObject(GameObjectType::MESHOBJECT, MeshObject::Create);
+
+    // We can then create an object like so:
+    auto ourMeshObject = GameObjectFactory::CreateObject(GameObjectType::MESHOBJECT);
+    
+    
+    std::dynamic_pointer_cast<MeshObject>(ourMeshObject)->MeshPrint();
+    
 
     // Example of shader compilation
     Shader shader("./assets/shaders/defaultShader/default.vert", "./assets/shaders/defaultShader/default.frag");
