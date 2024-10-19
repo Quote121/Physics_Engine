@@ -65,10 +65,15 @@ void Log::Write(const std::string& system, Args&&... message)
     logSS << system << ": Thread ID (" << std::this_thread::get_id() << ") " << " - ";
 
     logFormat(logSS, std::forward<Args>(message)...);
+
     logSS << std::endl;
-
     fileHandle.write(logSS.str().c_str(), logSS.str().size());
+
     fileHandle.flush();
+
+    // Enabled through compilation script
+#ifdef CONSOLE_LOG_OUTPUT
+    // Lock guard so this is thread safe
+    std::cout << logSS.str() << std::flush;
+#endif
 }
-
-

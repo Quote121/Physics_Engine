@@ -40,4 +40,10 @@ void Log::Write(const char* message, size_t size)
     std::lock_guard<std::mutex> lock(logMux);
     fileHandle.write(message, size);
     fileHandle.flush();
+
+    // Enabled through compilation script
+#ifdef CONSOLE_LOG_OUTPUT
+    // Lock guard so this is thread safe
+    std::cout << message << std::flush;
+#endif
 }

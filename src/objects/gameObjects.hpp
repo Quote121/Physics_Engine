@@ -2,6 +2,10 @@
 
 #include <memory>
 #include <unordered_map>
+#include <vector>
+
+#include "components.hpp"
+
 
 enum class GameObjectType {
     MESHOBJECT,
@@ -20,18 +24,59 @@ enum class GameObjectType {
 //      Render - Display information
 //      Update - update the values they have/animation
 // DecalObject - Projected textures such as bullet holes/blood
-
+// ParticleObject
 
 // General game object interface
 class IGameObject
 {
+private:
+    using ComponentID = std::size_t;
+
+    // Map of all components, indexed by a hash of their type
+    std::unordered_map<ComponentID, std::shared_ptr<IComponent>> componentMap;
+
 protected:
     // Display to the screen
     virtual void Render() = 0;
 
     // Update any components of the objects such as physics elements
     virtual void Update() = 0;
+
+    // Component based methods
+    template<typename T>
+    void AddComponent(const T& component)
+    {
+        componentMap[typeid(T).hash_code()] = component;
+    }
+
+    template<typename T>
+    void AddComponent(const T&& component)
+    {
+        componentMap[typeid(T).hash_code()] = component;
+    }
+
+    template<typename T>
+    T& GetComponent(const T& component)
+    {
+        auto index = componentMap.find(typeid(T).hash_code());
+        if (index != componentMap.end())
+        {
+            return index->second;
+        }
+        return nullptr;
+    }
+
+    template<typename T>
+    void RemoveComponent(const T& component)
+    {
+        auto index = componentMap.find(typeid(T).hash_code());
+        if (index != componentMap.end())
+        {
+            componentMap.erase(index);
+        }
+    }
 };
+
 
 
 // Singleton IGameObjectFactory

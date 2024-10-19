@@ -13,6 +13,15 @@ add_subdirectory(imgui)
 ## All includes are done relative to 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
+## Check if the variable is passed in terminal, if so apply it as compile def
+## Everytime this changes the files will be recompiled
+if(CONSOLE_LOG_OUTPUT)
+    message("CONSOLE_LOG_OUPUT is enabled")
+    add_compile_definitions(CONSOLE_LOG_OUTPUT)
+else()
+    message("CONSOLE_LOG_OUPUT is disabled")
+endif()
+
 ## Specifically list the source files for compilation
 set(SRC_SOURCES
     main.cpp
