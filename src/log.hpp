@@ -68,7 +68,6 @@ void Log::Write(const std::string& system, Args&&... message)
 
     logSS << std::endl;
     fileHandle.write(logSS.str().c_str(), logSS.str().size());
-
     fileHandle.flush();
 
     // Enabled through compilation script

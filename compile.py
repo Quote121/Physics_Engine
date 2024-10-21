@@ -8,6 +8,7 @@ import traceback
 EXECNAME = "physicsMain.exe"
 BUILDDIR = "build"
 EXECPATH = f"./{BUILDDIR}/src/{EXECNAME}"
+MAKEAPP = "mingw32-make.exe"
 WINDOWS: bool
 LINUX: bool
 
@@ -48,6 +49,7 @@ def main(parser: argparse.ArgumentParser) -> None:
     try:
         global args
         args = parser.parse_args()
+        current_dir = os.getcwd()
 
         if (args.run and args.gdb):
             write("Cannot use 'run' and 'run gdb' at the same time.")
@@ -80,6 +82,10 @@ def main(parser: argparse.ArgumentParser) -> None:
             else:
                 cmakeArgs.append("-DCONSOLE_LOG_OUTPUT=0")
 
+            ## Install path argument (location of this script is CMAKE_SOURCE_DIR)
+            verbose(f"Setting install prefix to: {current_dir}")
+            cmakeArgs.append(f"-DCMAKE_INSTALL_PREFIX={current_dir}")
+
             if (len(cmakeArgs) > 0):
                 verbose("Using cmake arguments: " + str(cmakeArgs))
 
@@ -92,7 +98,7 @@ def main(parser: argparse.ArgumentParser) -> None:
 
             ## Make
             verbose("Running make.")
-            subprocess.run(["mingw32-make.exe"])
+            subprocess.run([MAKEAPP, "install"])
 
         elif LINUX:
             error("Not implemented.")

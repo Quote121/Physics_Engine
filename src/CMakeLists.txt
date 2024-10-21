@@ -4,8 +4,9 @@ message(STATUS "Running src/ cmake")
 set(EXECUTABLE_NAME "physicsMain")
 message(STATUS "Name set as ${EXECUTABLE_NAME}")
 
-set(EXECUTABLE_DIR "${CMAKE_SOURCE_DIR}/bin")
-message(STATUS "Install dir set as ${EXECUTABLE_DIR}")
+set(EXECUTABLE_INSTALL_DIR ".")
+message(STATUS "Install dir set as ${EXECUTABLE_INSTALL_DIR}")
+message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 
 ## Add subdirs
 add_subdirectory(imgui)
@@ -24,6 +25,7 @@ endif()
 
 ## Specifically list the source files for compilation
 set(SRC_SOURCES
+    gameEngine.cpp
     main.cpp
     glad.c
     log.cpp
@@ -65,6 +67,10 @@ add_executable(${EXECUTABLE_NAME}
                ${OBJECTS_SOURCES}
 )
 
+## Install 
+INSTALL(TARGETS ${EXECUTABLE_NAME}
+    DESTINATION ${EXECUTABLE_INSTALL_DIR}
+)
 
 ## Setting up SDL2
 find_package(SDL2 REQUIRED)
@@ -84,27 +90,3 @@ ELSE()
     ## Implement Linux build
     message(ERROR "NO BUILD TARGET FOR NON WIN32 SYSTEMS")
 ENDIF()
-
-## Check if our install path exists, if not create it
-if (EXISTS "${EXECUTABLE_DIR}")
-    message("Install path '${EXECUTABLE_DIR}' exists.")
-else()
-    message("Install path '${EXECUTABLE_DIR}' does not exist.")
-    file(MAKE_DIRECTORY ${EXECUTABLE_DIR})
-    message("Created '${EXECUTABLE_DIR}'")
-endif()
-
-
-## Install 
-INSTALL(TARGETS ${EXECUTABLE_NAME}
-    DESTINATION ${EXECUTABLE_DIR}
-)
-
-## Custom commands
-
-add_custom_target(run
-    COMMAND ${EXECUTABLE_NAME}
-    DEPENDS ${EXECUTABLE_NAME}
-    WORKING_DIRECTORY ${EXECUTABLE_DIR}  # Set the working directory to where your executable is located
-    COMMENT "Running ${EXECUTABLE_NAME}"
-)
