@@ -29,6 +29,9 @@ enum class GameObjectType {
 // DecalObject - Projected textures such as bullet holes/blood
 // ParticleObject
 
+// Forward decl
+class CameraObject;
+
 // General game object interface
 class IGameObject
 {
@@ -55,9 +58,11 @@ protected:
     }
 
     template<typename T>
-    void AddComponent(const T&& component)
+    std::shared_ptr<T> AddComponent(const T&& component)
     {
-        componentMap[typeid(T).hash_code()] = std::make_shared<IComponent>(component);
+        std::shared_ptr<T> object = std::make_shared<T>(std::forward<const T>(component));
+        componentMap[typeid(T).hash_code()] = object;
+        return object;
     }
 
     // Default type constructor
@@ -84,11 +89,14 @@ public:
         auto index = componentMap.find(typeid(T).hash_code());
         if (index != componentMap.end())
         {
-            return std::dynamic_pointer_cast<T>(index->second);
+            // Compile time pointer cast
+            return std::static_pointer_cast<T>(index->second);;
         }
+        Log::Write("GetComponent", "Warning, map miss, returning nullptr.");
         return nullptr;
     }
 };
+
 
 
 
@@ -124,6 +132,9 @@ public:
     }
 };
 
+
+
+
 // Example object becuase I cant think rn
 class MeshObject : public IGameObject
 {
@@ -141,6 +152,13 @@ public:
         return std::make_shared<MeshObject>();
     }
 };
+
+
+////////////////////////////////
+//                            //
+//        CameraObject        //
+//                            //
+////////////////////////////////
 
 constexpr float fov = 45.0f;
 constexpr float nearPlane = 0.1f;
@@ -184,12 +202,15 @@ public:
     CameraObject(glm::vec3 position = {0,0,0})
         : m_yaw(0.0f), m_pitch(0.0f)
     {
-        std::cout << "CAM CONSTRUCT\n";
         // Construct component with non-default data
         this->AddComponent(PositionComponent(position));
         
         // Construct component with default data and constructor
         this->AddComponent<RendererComponent>();
+
+        // Add a keyboard event listener that uses this->KeyboardCallback to execute any keyboard events
+        // We then also have to register it once its been allocated
+        this->AddComponent(KeyBoardEventComponent<CameraObject>(this, &KeyboardCallback))->Register();
     }
 
     inline glm::mat4 GetViewMatrix(void)
@@ -217,6 +238,13 @@ public:
         // Update view matrix based on camera position
         UpdateCameraVectors();
     }
+
+    // The keyboard callback method to process inputs for us
+    void KeyboardCallback(unsigned int keyCode)
+    {
+        Log::Write("KeyboardCallback", "Keypressed: ", keyCode);
+    }
+
 
     static std::shared_ptr<IGameObject> Create()
     {

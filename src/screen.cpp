@@ -105,6 +105,7 @@ void Screen::s_ClearColour(const glm::vec3& colour)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+// TODO move to game engine
 void Screen::s_Shutdown(void)
 {
     s_quit = true;

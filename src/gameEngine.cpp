@@ -25,9 +25,9 @@ void GameEngine::Init()
     auto ourMeshObject = GameObjectFactory::CreateObject(GameObjectType::MESHOBJECT);
     auto cameraObject = GameObjectFactory::CreateObject(GameObjectType::CAMERAOBJECT);
 
-    this->SetCurrentRenderTarget(cameraObject->GetComponent<RendererComponent>()->renderer);
+    // this->SetCurrentRenderTarget(cameraObject->GetComponent<RendererComponent>()->renderer);
 
-    std::dynamic_pointer_cast<MeshObject>(ourMeshObject)->MeshPrint();
+    // std::dynamic_pointer_cast<MeshObject>(ourMeshObject)->MeshPrint();
 }
 
 
@@ -36,7 +36,6 @@ void GameEngine::GameLoop()
     //
     // <Temp> Example render code
     //
-    std::unique_ptr<Input> inputHandler = std::make_unique<Input>();
 
     // Example of shader compilation
     Shader shader("./assets/shaders/defaultShader/default.vert", "./assets/shaders/defaultShader/default.frag");
@@ -64,6 +63,7 @@ void GameEngine::GameLoop()
     while (!Screen::s_GetQuitStatus())
     {
         Time::UpdateFrameTime();
+        // std::cout << Time::GetFramesPerSecond() << std::endl;
 
         Screen::s_ClearColour({0.2f, 0.0f, 0.4f});
         Screen::s_UpdateViewPort();
@@ -76,7 +76,8 @@ void GameEngine::GameLoop()
 
         Screen::s_SwapWindow();
 
-        inputHandler->ReadInputs();
+        InputPublisher::GetInstance()->ReadInputs();
+
     }
     Screen::s_CleanUp();
 }

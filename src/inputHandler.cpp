@@ -1,44 +1,53 @@
-#include <atomic>
-#include <vector>
-#include <SDL2/SDL.h>
-#include "log.hpp"
-#include "screen.hpp"
+#include "inputHandler.hpp"
+#include "objects/components.hpp"
 
-namespace Input
+// Static initalization
+InputPublisher* InputPublisher::m_pInstance{nullptr};
+
+void InputPublisher::NotifyAll()
 {
-    void ReadInputs(void)
+    for (auto& s : m_observers)
     {
-        SDL_Event e;
+        s->OnNotify();
+    }
+}
 
-        while (SDL_PollEvent(&e) != 0)
-        {
-            // OS wants to quit. Such as pressing close button
-            if (e.type == SDL_QUIT)
-            {
-                std::cout << "Quit" << std::endl;
-                Screen::s_Shutdown();
-            }
-            if (e.type == SDL_KEYDOWN)
-            {
-                // std::cout << "Keydown" << std::endl;
-            }
-        }
+//
+// Will do two things
+// Will read sld poll states to check for quits, etc and will handle them
+// Will read SDL_GetKeyboardState and send the mapped function over to any observers
+//
+void InputPublisher::ReadInputs(void)
+{
+    SDL_Event e;
 
-        // Deal with individual key presses
-        const Uint8* state = SDL_GetKeyboardState(NULL);
-        if (state[SDL_SCANCODE_ESCAPE])
+    while (SDL_PollEvent(&e) != 0)
+    {
+        // OS wants to quit. Such as pressing close button
+        if (e.type == SDL_QUIT)
         {
-            // std::cout << "ESC pressed" << std::endl;
+            std::cout << "Quit" << std::endl;
             Screen::s_Shutdown();
         }
-        if (state[SDL_SCANCODE_D])
+        if (e.type == SDL_KEYDOWN)
         {
-            // std::cout << "D pressed" << std::endl;
+            if (e.key.keysym.sym == SDLK_ESCAPE)
+            {
+                std::cout << "ESC pressed." << std::endl;
+                Screen::s_Shutdown();
+            }
         }
     }
 
-    void ProcessInputs(void)
+    // Read key inputs
+    const Uint8* state = SDL_GetKeyboardState(NULL);
+    // For each binding, check if the key is pressed. If so, set the current state and notify
+    for (auto& i : keyBindingMap)
     {
-
+        if (state[i.first])
+        {
+            currentState = static_cast<unsigned int>(i.second);
+            NotifyAll();
+        }
     }
 }
