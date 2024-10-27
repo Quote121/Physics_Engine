@@ -3,11 +3,12 @@ import os
 import subprocess
 import shutil
 import argparse
-
+import traceback
 
 EXECNAME = "physicsMain.exe"
 BUILDDIR = "build"
 EXECPATH = f"./{BUILDDIR}/src/{EXECNAME}"
+MAKEAPP = "mingw32-make.exe"
 WINDOWS: bool
 LINUX: bool
 
@@ -48,6 +49,7 @@ def main(parser: argparse.ArgumentParser) -> None:
     try:
         global args
         args = parser.parse_args()
+        current_dir = os.getcwd()
 
         if (args.run and args.gdb):
             write("Cannot use 'run' and 'run gdb' at the same time.")
@@ -69,19 +71,34 @@ def main(parser: argparse.ArgumentParser) -> None:
         verbose("Entered build dir.")
 
         if WINDOWS:
-            cmakeArgs = ""
-
+            cmakeArgs = []
+            
             ## Debug is needed if we are using gdb too
             if (args.debug or args.gdb):
-                cmakeArgs += "-DCMAKE_BUILD_TYPE=debug"
+                cmakeArgs.append("-DCMAKE_BUILD_TYPE=debug")
+            ## Output log to the console
+            if (args.log):
+                cmakeArgs.append("-DCONSOLE_LOG_OUTPUT=1")
+            else:
+                cmakeArgs.append("-DCONSOLE_LOG_OUTPUT=0")
+
+            ## Install path argument (location of this script is CMAKE_SOURCE_DIR)
+            verbose(f"Setting install prefix to: {current_dir}")
+            cmakeArgs.append(f"-DCMAKE_INSTALL_PREFIX={current_dir}")
+
+            if (len(cmakeArgs) > 0):
+                verbose("Using cmake arguments: " + str(cmakeArgs))
 
             ## CMake create
             verbose("Running cmake script.")
-            subprocess.run(["cmake", "-G", "MinGW Makefiles", "-DCMAKE_C_COMPILER=gcc", "-DCMAKE_CXX_COMPILER=g++", cmakeArgs, ".."])
+
+            command = ["cmake", "-G", "MinGW Makefiles", "-DCMAKE_C_COMPILER=gcc", "-DCMAKE_CXX_COMPILER=g++"] + cmakeArgs + [".."]
+            verbose("Running command: " + str(command))
+            subprocess.run(command)
 
             ## Make
             verbose("Running make.")
-            subprocess.run(["mingw32-make.exe"])
+            subprocess.run([MAKEAPP, "install"])
 
         elif LINUX:
             error("Not implemented.")
@@ -102,7 +119,8 @@ def main(parser: argparse.ArgumentParser) -> None:
     except KeyboardInterrupt:
         error("Keyboard interrupt.")
     except Exception as e:
-        error(("Exception: " + str(e)))
+        trace = traceback.format_exc()
+        error(("Exception: " + str(e) + trace))
 
 
 if __name__ == "__main__":
@@ -129,5 +147,6 @@ if __name__ == "__main__":
     parser.add_argument('-v', '--verbose', help="Print out detailed information", action='store_true')
     parser.add_argument('-d', '--debug', help="Enable debugging symbols", action='store_true')
     parser.add_argument('-g', '--gdb', help="Enable gdb", action='store_true')
+    parser.add_argument('-l', '--log', help="Write the log output to console", action='store_true')
 
     main(parser)

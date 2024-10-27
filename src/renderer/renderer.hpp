@@ -8,7 +8,7 @@
 #include "indexBuffer.hpp"
 #include "vertexBufferLayout.hpp"
 
-#include "../log.hpp"
+#include "log.hpp"
 
 #define OPENGL
 #ifdef OPENGL

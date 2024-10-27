@@ -4,27 +4,39 @@ message(STATUS "Running src/ cmake")
 set(EXECUTABLE_NAME "physicsMain")
 message(STATUS "Name set as ${EXECUTABLE_NAME}")
 
-set(EXECUTABLE_DIR "${CMAKE_SOURCE_DIR}/bin")
-message(STATUS "Install dir set as ${EXECUTABLE_DIR}")
-
+set(EXECUTABLE_INSTALL_DIR ".")
+message(STATUS "Install dir set as ${EXECUTABLE_INSTALL_DIR}")
+message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 
 ## Add subdirs
 add_subdirectory(imgui)
 
-## Set SRC_SOURCES to be all .cpp and .c files in current dir
-# file(GLOB SRC_SOURCES "*.cpp" "*.c")
+## All includes are done relative to
+include_directories("${CMAKE_SOURCE_DIR}/src")
+
+## Check if the variable is passed in terminal, if so apply it as compile def
+## Everytime this changes the files will be recompiled
+if(CONSOLE_LOG_OUTPUT)
+    message("CONSOLE_LOG_OUPUT is enabled")
+    add_compile_definitions(CONSOLE_LOG_OUTPUT)
+else()
+    message("CONSOLE_LOG_OUPUT is disabled")
+endif()
 
 ## Specifically list the source files for compilation
 set(SRC_SOURCES
+    gameEngine.cpp
     main.cpp
     glad.c
     log.cpp
     screen.cpp
-    inputHandler.cpp    
+    inputHandler.cpp
     stb_image.cpp
-    objectLoader.cpp
+    time.cpp
+    publisher.cpp
 )
 
+## All components that are to do with the graphics API interaction
 set(RENDERER_SOURCES
     renderer/shader.cpp
     renderer/renderer.cpp
@@ -32,6 +44,10 @@ set(RENDERER_SOURCES
     renderer/vertexArray.cpp
     renderer/vertexBuffer.cpp
     renderer/vertexBufferLayout.cpp
+)
+
+set(OBJECTS_SOURCES
+    objects/gameObjects.cpp
 )
 
 ## ImGui source files
@@ -49,8 +65,13 @@ set(IMGUI_SOURCES
 add_executable(${EXECUTABLE_NAME}
                ${SRC_SOURCES}
                ${RENDERER_SOURCES}
+               ${OBJECTS_SOURCES}
 )
 
+## Install
+INSTALL(TARGETS ${EXECUTABLE_NAME}
+    DESTINATION ${EXECUTABLE_INSTALL_DIR}
+)
 
 ## Setting up SDL2
 find_package(SDL2 REQUIRED)
@@ -61,7 +82,7 @@ message(STATUS "SDL LIB: ${SDL2_LIBRARIES}")
 
 IF (WIN32)
     # Linking
-    target_link_libraries(${EXECUTABLE_NAME} PUBLIC 
+    target_link_libraries(${EXECUTABLE_NAME} PUBLIC
         ${SDL2_LIBRARIES}           # SDL libraries
         ssp                         # Stack smashing protector library, not in libc for mingw, has to be linked here
     )
@@ -70,27 +91,3 @@ ELSE()
     ## Implement Linux build
     message(ERROR "NO BUILD TARGET FOR NON WIN32 SYSTEMS")
 ENDIF()
-
-## Check if our install path exists, if not create it
-if (EXISTS "${EXECUTABLE_DIR}")
-    message("Install path '${EXECUTABLE_DIR}' exists.")
-else()
-    message("Install path '${EXECUTABLE_DIR}' does not exist.")
-    file(MAKE_DIRECTORY ${EXECUTABLE_DIR})
-    message("Created '${EXECUTABLE_DIR}'")
-endif()
-
-
-## Install 
-INSTALL(TARGETS ${EXECUTABLE_NAME}
-    DESTINATION ${EXECUTABLE_DIR}
-)
-
-## Custom commands
-
-add_custom_target(run
-    COMMAND ${EXECUTABLE_NAME}
-    DEPENDS ${EXECUTABLE_NAME}
-    WORKING_DIRECTORY ${EXECUTABLE_DIR}  # Set the working directory to where your executable is located
-    COMMENT "Running ${EXECUTABLE_NAME}"
-)

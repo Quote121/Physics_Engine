@@ -4,11 +4,9 @@
 #include <mutex>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include "screen.hpp"
 
-#include <iostream>
-
-using hdTimePoint = std::chrono::high_resolution_clock::time_point;
 
 extern const char* logPath;
 extern const char* logFileName;
@@ -17,12 +15,10 @@ class Log
 {
 private:
     static std::mutex logMux;
-
     static std::ofstream fileHandle;    
 
 public:
-    static const hdTimePoint startTimePoint;
-
+    
     /// @brief Open file
     static void Open(void);
 
@@ -39,15 +35,6 @@ public:
     /// @param ...message Comma seperated list of messages 
     template<typename... Args>
     static void Write(const std::string& system, Args&&... message);
-
-    /// @brief Get string 
-    /// @param startPoint Start time to determine elapsed time
-    /// @return formatted string mm:ss:mss
-    static std::string GetTimeElapsedString(hdTimePoint startPoint);
-
-    /// @brief Get a high definition of the current time point
-    /// @return Return high definition time point
-    static inline hdTimePoint GetTimePointNow(void);
 };
 
 
@@ -78,14 +65,14 @@ void Log::Write(const std::string& system, Args&&... message)
     logSS << system << ": Thread ID (" << std::this_thread::get_id() << ") " << " - ";
 
     logFormat(logSS, std::forward<Args>(message)...);
-    logSS << std::endl;
 
+    logSS << std::endl;
     fileHandle.write(logSS.str().c_str(), logSS.str().size());
     fileHandle.flush();
-}
 
-
-inline hdTimePoint Log::GetTimePointNow(void)
-{
-    return std::chrono::high_resolution_clock::now();
+    // Enabled through compilation script
+#ifdef CONSOLE_LOG_OUTPUT
+    // Lock guard so this is thread safe
+    std::cout << logSS.str() << std::flush;
+#endif
 }
