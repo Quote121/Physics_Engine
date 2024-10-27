@@ -7,7 +7,8 @@
 #include <glm/glm.hpp>
 
 #include "components.hpp"
-
+#include "renderer/vertexArray.hpp"
+#include "objectLoader.hpp"
 
 enum class GameObjectType {
     MESHOBJECT,
@@ -31,7 +32,7 @@ enum class GameObjectType {
 
 // Forward decl
 class CameraObject;
-
+class MeshObject;
 // General game object interface
 class IGameObject
 {
@@ -126,7 +127,7 @@ public:
         const auto& entry = callbackMap.find(type);
         if (entry != callbackMap.end())
         {
-            return (entry->second)(); 
+            return (entry->second)();
         }
         return nullptr;
     }
@@ -139,13 +140,41 @@ public:
 class MeshObject : public IGameObject
 {
 private:
+    // Mesh data
+    std::vector<float> m_vertices;
+    std::vector<unsigned int> m_indices;
+
+    // Texture data
+    std::vector<float> m_textureCoords;
+    std::vector<unsigned int> m_textureIndices;
+
+    // Normal data
+    std::vector<float> m_normals;
+    std::vector<unsigned int> m_normalIndices;
 
 public:
     void Render() {}
     void Update() {}
 
     void MeshPrint() {}
+    VertexArray m_VAO;
+    MeshObject(glm::vec3 position = {0,0,0}, const char* objFile = nullptr)
+    {
+        // Construct component with non-default data
+        this->AddComponent(PositionComponent(position));
+        //this->AddComponent(RotationComponent({0, 0, 0})); for some reason this doesnt work?
+        this->AddComponent(ScaleComponent());
 
+        if(objFile)
+        {
+            // Load obj file
+            // LoadMesh(objFile);
+            ObjectLoader::LoadMesh(objFile, this);
+        }
+
+        // Construct component with default data and constructor
+        this->AddComponent<RendererComponent>();
+    }
     // Call back function for factory
     static std::shared_ptr<IGameObject> Create()
     {
@@ -204,7 +233,7 @@ public:
     {
         // Construct component with non-default data
         this->AddComponent(PositionComponent(position));
-        
+
         // Construct component with default data and constructor
         this->AddComponent<RendererComponent>();
 
@@ -228,12 +257,12 @@ public:
     //
     // All objects that need to be rendererd will check every available renderer
     // for which one is currently being used. And therefore which camera
-    void Render() 
+    void Render()
     {
 
     }
 
-    void Update() 
+    void Update()
     {
         // Update view matrix based on camera position
         UpdateCameraVectors();

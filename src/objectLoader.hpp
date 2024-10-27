@@ -11,6 +11,10 @@
 #include "renderer/vertexArray.hpp"
 #include "log.hpp"
 
+#include "objects/components.hpp"
+#include "objects/gameObjects.hpp"
+
+class MeshObject;
 
 class ObjectLoader
 {
@@ -18,5 +22,5 @@ public:
     ObjectLoader();
     ~ObjectLoader();
 
-    void LoadObject(const char* path, VertexArray* VAO);
+    static void LoadMesh(const char* path, MeshObject* Mesh);
 };
