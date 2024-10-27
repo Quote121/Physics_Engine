@@ -22,6 +22,7 @@ set(SRC_SOURCES
     screen.cpp
     inputHandler.cpp    
     stb_image.cpp
+    objectLoader.cpp
 )
 
 set(RENDERER_SOURCES
