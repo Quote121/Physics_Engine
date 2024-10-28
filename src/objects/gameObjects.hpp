@@ -33,6 +33,7 @@ enum class GameObjectType {
 // Forward decl
 class CameraObject;
 class MeshObject;
+
 // General game object interface
 class IGameObject
 {
@@ -139,7 +140,7 @@ public:
 // Example object becuase I cant think rn
 class MeshObject : public IGameObject
 {
-private:
+public:
     // Mesh data
     std::vector<float> m_vertices;
     std::vector<unsigned int> m_indices;
@@ -152,7 +153,7 @@ private:
     std::vector<float> m_normals;
     std::vector<unsigned int> m_normalIndices;
 
-public:
+
     void Render() {}
     void Update() {}
 

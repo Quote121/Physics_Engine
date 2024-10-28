@@ -41,3 +41,4 @@ log.txt
 
 # environment files
 .cache/
+.clangd

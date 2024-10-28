@@ -1,5 +1,18 @@
 #include "ObjectLoader.hpp"
 
+// Only define once in a source file
+#define TINYOBJLOADER_IMPLEMENTATION
+
+#include <tiny_obj_loader/tiny_obj_loader.h>
+
+#include "objects/gameObjects.hpp"
+
+#include "renderer/vertexBuffer.hpp"
+#include "renderer/vertexBufferLayout.hpp"
+#include "renderer/vertexArray.hpp"
+#include "log.hpp"
+
+#include <vector>
 
 ObjectLoader::ObjectLoader()
 {
@@ -9,7 +22,7 @@ ObjectLoader::~ObjectLoader()
 {
 }
 
-static void ObjectLoader::LoadMesh(const char* path, MeshObject* Mesh)
+void ObjectLoader::LoadMesh(const char* path, MeshObject* mesh_out)
 {
     // Load object from file
     // Parse object
@@ -32,13 +45,15 @@ static void ObjectLoader::LoadMesh(const char* path, MeshObject* Mesh)
         Log::Write("[ObjectLoader] ", "Warning: ", reader.Warning());
     }
 
-    attrib_t attrib = reader.GetAttrib();
-
-    auto& attrib = reader.GetAttrib();
+    
+    tinyobj::attrib_t attrib = reader.GetAttrib();
     auto& shapes = reader.GetShapes();
     auto& materials = reader.GetMaterials();
 
-    tinyobj::index_t expected_vert_data = shapes[s].mesh.indices[0];
+    // s unused variable here. Not sure if this is supposed to loop "for (auto& s : shapes)" or something
+    // tinyobj::index_t expected_vert_data = shapes[s].mesh.indices[0];
+    tinyobj::index_t expected_vert_data; // To compile
+
     int vert_data = 0;
     if(expected_vert_data.vertex_index >= 0)
     {
@@ -55,7 +70,7 @@ static void ObjectLoader::LoadMesh(const char* path, MeshObject* Mesh)
 
     VertexBufferLayout VBL;
     VBL.AddFloat(vert_data);
-    vector<real_t> vert_elems;
+    std::vector<tinyobj::real_t> vert_elems;
     VertexBuffer VBO;
     // Loop over shapes
     for (size_t s = 0; s < shapes.size(); s++) {
@@ -74,10 +89,10 @@ static void ObjectLoader::LoadMesh(const char* path, MeshObject* Mesh)
             vert_elems.push_back(vx);
             vert_elems.push_back(vy);
             vert_elems.push_back(vz);
-            Mesh.m_vertices.push_back(vx);
-            Mesh.m_vertices.push_back(vy);
-            Mesh.m_vertices.push_back(vz);
-            Mesh.m_indices.push_back(idx.vertex_index);
+            mesh_out->m_vertices.push_back(vx);
+            mesh_out->m_vertices.push_back(vy);
+            mesh_out->m_vertices.push_back(vz);
+            mesh_out->m_indices.push_back(idx.vertex_index);
             // Check if `normal_index` is zero or positive. negative = no normal data
             if (idx.normal_index >= 0) {
                 tinyobj::real_t nx = attrib.normals[3*size_t(idx.normal_index)+0];
@@ -86,10 +101,10 @@ static void ObjectLoader::LoadMesh(const char* path, MeshObject* Mesh)
                 vert_elems.push_back(nx);
                 vert_elems.push_back(ny);
                 vert_elems.push_back(nz);
-                Mesh.m_normals.push_back(nx);
-                Mesh.m_normals.push_back(ny);
-                Mesh.m_normals.push_back(nz);
-                Mesh.m_normalIndices.push_back(idx.normal_index);
+                mesh_out->m_normals.push_back(nx);
+                mesh_out->m_normals.push_back(ny);
+                mesh_out->m_normals.push_back(nz);
+                mesh_out->m_normalIndices.push_back(idx.normal_index);
             }
 
             // Check if `texcoord_index` is zero or positive. negative = no texcoord data
@@ -98,9 +113,9 @@ static void ObjectLoader::LoadMesh(const char* path, MeshObject* Mesh)
                 tinyobj::real_t ty = attrib.texcoords[2*size_t(idx.texcoord_index)+1];
                 vert_elems.push_back(tx);
                 vert_elems.push_back(ty);
-                Mesh.m_textureCoords.push_back(tx);
-                Mesh.m_textureCoords.push_back(ty);
-                Mesh.m_textureIndices.push_back(idx.texcoord_index);
+                mesh_out->m_textureCoords.push_back(tx);
+                mesh_out->m_textureCoords.push_back(ty);
+                mesh_out->m_textureIndices.push_back(idx.texcoord_index);
             }
 
             // Optional: vertex colors
@@ -114,9 +129,8 @@ static void ObjectLoader::LoadMesh(const char* path, MeshObject* Mesh)
             // shapes[s].mesh.material_ids[f];
         }
 
-        VBO.SetData<real_t>(vert_elems.data(), vert_elems.size() * sizeof(real_t));
-        Mesh.VAO->AddBuffer(&VBO, &VBL);
-
+        VBO.SetData<tinyobj::real_t>(vert_elems.data(), vert_elems.size() * sizeof(tinyobj::real_t));
+        mesh_out->m_VAO.AddBuffer(&VBO, &VBL);
     }
 
     /*  Example VAO Usage

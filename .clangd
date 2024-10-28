@@ -1,5 +1,0 @@
-CompileFlags:
-    Add:
-        - -IC:/msys64/mingw64/include
-        - -IC:/msys64/mingw64/
-        - -Isrc

@@ -34,6 +34,7 @@ set(SRC_SOURCES
     stb_image.cpp
     time.cpp
     publisher.cpp
+    objectloader.cpp
 )
 
 ## All components that are to do with the graphics API interaction
