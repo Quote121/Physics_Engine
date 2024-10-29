@@ -22,7 +22,7 @@ ObjectLoader::~ObjectLoader()
 {
 }
 
-void ObjectLoader::LoadMesh(const char* path, MeshObject* mesh_out)
+void ObjectLoader::LoadMesh(const char* path, std::shared_ptr<MeshObject> mesh_out)
 {
     // Load object from file
     // Parse object
@@ -45,7 +45,7 @@ void ObjectLoader::LoadMesh(const char* path, MeshObject* mesh_out)
         Log::Write("[ObjectLoader] ", "Warning: ", reader.Warning());
     }
 
-    
+
     tinyobj::attrib_t attrib = reader.GetAttrib();
     auto& shapes = reader.GetShapes();
     auto& materials = reader.GetMaterials();
@@ -54,22 +54,22 @@ void ObjectLoader::LoadMesh(const char* path, MeshObject* mesh_out)
     // tinyobj::index_t expected_vert_data = shapes[s].mesh.indices[0];
     tinyobj::index_t expected_vert_data; // To compile
 
-    int vert_data = 0;
+    VertexBufferLayout VBL;
+
     if(expected_vert_data.vertex_index >= 0)
     {
-        vert_data += 3;
+        VBL.AddFloat(3);
     }
     if(expected_vert_data.normal_index >= 0)
     {
-        vert_data += 3;
+        VBL.AddFloat(3);
     }
     if(expected_vert_data.texcoord_index >= 0)
     {
-        vert_data += 2;
+        VBL.AddFloat(2);
     }
 
-    VertexBufferLayout VBL;
-    VBL.AddFloat(vert_data);
+
     std::vector<tinyobj::real_t> vert_elems;
     VertexBuffer VBO;
     // Loop over shapes
@@ -129,7 +129,7 @@ void ObjectLoader::LoadMesh(const char* path, MeshObject* mesh_out)
             // shapes[s].mesh.material_ids[f];
         }
 
-        VBO.SetData<tinyobj::real_t>(vert_elems.data(), vert_elems.size() * sizeof(tinyobj::real_t));
+        VBO.SetData<tinyobj::real_t>(vert_elems.data(), vert_elems.size());
         mesh_out->m_VAO.AddBuffer(&VBO, &VBL);
     }
 

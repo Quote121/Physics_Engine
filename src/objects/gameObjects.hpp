@@ -166,12 +166,12 @@ public:
         //this->AddComponent(RotationComponent({0, 0, 0})); for some reason this doesnt work?
         this->AddComponent(ScaleComponent());
 
-        if(objFile)
-        {
-            // Load obj file
-            // LoadMesh(objFile);
-            ObjectLoader::LoadMesh(objFile, this);
-        }
+        // if(objFile)
+        // {
+        //     // Load obj file
+        //     // LoadMesh(objFile);
+        //     ObjectLoader::LoadMesh(objFile, this);
+        // }
 
         // Construct component with default data and constructor
         this->AddComponent<RendererComponent>();
