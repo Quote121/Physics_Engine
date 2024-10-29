@@ -38,3 +38,4 @@ build/
 
 # Log files
 log.txt
+.cache
