@@ -4,12 +4,12 @@
 #include "time.hpp"
 #include "inputHandler.hpp"
 
-void GameEngine::SetCurrentRenderTarget(std::shared_ptr<Renderer> renderer)
+void GameEngine::SetCurrentRenderTarget(Renderer* renderer)
 {
     m_renderTarget = renderer;
 }
 
-std::shared_ptr<Renderer> GameEngine::GetCurrentRenderTarget()
+Renderer* GameEngine::GetCurrentRenderTarget()
 {
     return m_renderTarget;
 }

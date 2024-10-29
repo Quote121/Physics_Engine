@@ -39,7 +39,7 @@ private:
     using ComponentID = std::size_t;
 
     // Map of all components, indexed by a hash of their type
-    std::unordered_map<ComponentID, std::shared_ptr<IComponent>> componentMap;
+    std::unordered_map<ComponentID, std::unique_ptr<IComponent>> componentMap;
 
 protected:
     // Display to the screen
@@ -58,18 +58,17 @@ protected:
     }
 
     template<typename T>
-    std::shared_ptr<T> AddComponent(const T&& component)
+    T* AddComponent(const T&& component)
     {
-        std::shared_ptr<T> object = std::make_shared<T>(std::forward<const T>(component));
-        componentMap[typeid(T).hash_code()] = object;
-        return object;
+        componentMap[typeid(T).hash_code()] = std::make_unique<T>(std::forward<const T>(component));
+        return this->GetComponent<T>();
     }
 
     // Default type constructor
     template<typename T>
     void AddComponent(void)
     {
-        componentMap[typeid(T).hash_code()] = std::make_shared<T>();
+        componentMap[typeid(T).hash_code()] = std::make_unique<T>();
     }
 
     template<typename T>
@@ -84,13 +83,13 @@ protected:
 
 public:
     template<typename T>
-    std::shared_ptr<T> GetComponent()
+    T* GetComponent()
     {
         auto index = componentMap.find(typeid(T).hash_code());
         if (index != componentMap.end())
         {
             // Compile time pointer cast
-            return std::static_pointer_cast<T>(index->second);;
+            return dynamic_cast<T*>(index->second.get());
         }
         Log::Write("GetComponent", "Warning, map miss, returning nullptr.");
         return nullptr;
@@ -104,7 +103,7 @@ public:
 // Extensable factory, we can keep adding methods as long as they have the Create() method
 class GameObjectFactory
 {
-    using GameObjectCallback = std::shared_ptr<IGameObject> (*)();
+    using GameObjectCallback = IGameObject* (*)();
     using factoryCallBackMap = std::unordered_map<GameObjectType, GameObjectCallback>;
 
 private:
@@ -121,7 +120,7 @@ public:
         callbackMap.erase(type);
     }
 
-    static std::shared_ptr<IGameObject> CreateObject(const GameObjectType type)
+    static IGameObject* CreateObject(const GameObjectType type)
     {
         const auto& entry = callbackMap.find(type);
         if (entry != callbackMap.end())
@@ -147,9 +146,10 @@ public:
     void MeshPrint() {}
 
     // Call back function for factory
-    static std::shared_ptr<IGameObject> Create()
+    static IGameObject* Create()
     {
-        return std::make_shared<MeshObject>();
+        // TODO have object handler
+        return new MeshObject();
     }
 };
 
@@ -246,8 +246,9 @@ public:
     }
 
 
-    static std::shared_ptr<IGameObject> Create()
+    static IGameObject* Create()
     {
-        return std::make_shared<CameraObject>();
+        // TODO have object handler
+        return new CameraObject();
     }
 };

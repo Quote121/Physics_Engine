@@ -6,11 +6,11 @@
 class GameEngine
 {
 private:
-    std::shared_ptr<Renderer> m_renderTarget;
+    Renderer* m_renderTarget;
 
 public:
-    void SetCurrentRenderTarget(std::shared_ptr<Renderer> renderer);
-    std::shared_ptr<Renderer> GetCurrentRenderTarget();
+    void SetCurrentRenderTarget(Renderer* renderer);
+    Renderer* GetCurrentRenderTarget();
     void Init();
     void GameLoop();
 };

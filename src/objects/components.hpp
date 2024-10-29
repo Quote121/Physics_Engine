@@ -61,12 +61,15 @@ public:
 class RendererComponent : public IComponent
 {
 private:
-
+    std::unique_ptr<Renderer> renderer;
 public:
-    std::shared_ptr<Renderer> renderer;
     RendererComponent()
     {
-        renderer = std::make_shared<Renderer>();
+        renderer = std::make_unique<Renderer>();
+    }
+    Renderer* GetRenderer()
+    {
+        return renderer.get();
     }
 };
 
@@ -90,7 +93,7 @@ public:
 
     void Register() override
     {
-        InputPublisher::GetInstance()->AddObserver(this->shared_from_this());
+        InputPublisher::GetInstance()->AddObserver(this);
     }
     
     // When a keyboard event fires
