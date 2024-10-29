@@ -80,7 +80,7 @@ bool Screen::s_Initalize(void)
     ssInfo << "Version: " << glGetString(GL_VERSION) << "\n";
     ssInfo << "Shading Language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << "\n";
     ssInfo << "-----------------------------------------------------\n";
-    Log::Write(ssInfo.str().c_str(), ssInfo.str().size());
+    Log::WriteRaw(ssInfo.str().c_str(), ssInfo.str().size());
 
     Log::Write("SDL init", "Took ", Time::GetTimeElapsedString(SDLinitStartTime), " to start SDL.");
     return true;
