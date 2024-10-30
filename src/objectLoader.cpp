@@ -60,21 +60,20 @@ void ObjectLoader::LoadMesh(const char* path, MeshObject* mesh_out)
     if(expected_vert_data.vertex_index >= 0)
     {
         VBL.AddFloat(3);
-        Log::Write("Loader", "Verts");
     }
     if(expected_vert_data.normal_index >= 0)
     {
         VBL.AddFloat(3);
-        Log::Write("Loader", "Floats");
     }
     if(expected_vert_data.texcoord_index >= 0)
     {
         VBL.AddFloat(2);
-        Log::Write("Loader", "TexCoords");
     }
 
 
     std::vector<tinyobj::real_t> vert_elems;
+    vert_elems.reserve(10000); // Pre allocate to avoid excessive allocations
+
     // Loop over shapes
     for (size_t s = 0; s < shapes.size(); s++) {
     // Loop over faces(polygon)
@@ -131,7 +130,6 @@ void ObjectLoader::LoadMesh(const char* path, MeshObject* mesh_out)
             // per-face material
             // shapes[s].mesh.material_ids[f];
         }
-
         mesh_out->m_VBO.SetData<tinyobj::real_t>(vert_elems.data(), vert_elems.size());
         mesh_out->m_VAO.AddBuffer(&mesh_out->m_VBO, &VBL);
     }
