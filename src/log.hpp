@@ -28,7 +28,7 @@ public:
     /// @brief Write to file (thread safe)
     /// @param message Raw message
     /// @param size Size of char buffer
-    static void Write(const char* message, size_t size);
+    static void WriteRaw(const char* message, size_t size);
     
     /// @brief Write to file (thread safe)
     /// @param system The system to report the error from e.g. ("Input System")

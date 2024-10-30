@@ -9,7 +9,7 @@ class IEventObserver;
 class IPublisher
 {
 protected:
-    std::forward_list<std::shared_ptr<IEventObserver>> m_observers;
+    std::forward_list<IEventObserver*> m_observers;
 
     /// @brief Call all the observers notify function
     virtual void NotifyAll() = 0;
@@ -19,10 +19,10 @@ public:
 
     /// @brief Subscribe to the publisher
     /// @param observer The subscriber. Will be notified on an event
-    void AddObserver(std::shared_ptr<IEventObserver> observer);
+    void AddObserver(IEventObserver* observer);
 
     /// @brief Unsubscribe from the publisher. No more notifications.
     /// @param observer The subscriber to remove, will no longer be notified.
-    void RemoveObserver(std::shared_ptr<IEventObserver> observer);
+    void RemoveObserver(IEventObserver* observer);
 };
 

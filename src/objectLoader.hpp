@@ -8,5 +8,5 @@ public:
     ObjectLoader();
     ~ObjectLoader();
 
-    static void LoadMesh(const char* path, std::shared_ptr<MeshObject> mesh_out);
+    static void LoadMesh(const char* path, MeshObject* mesh_out);
 };

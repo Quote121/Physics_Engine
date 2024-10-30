@@ -35,7 +35,7 @@ void Log::Close(void)
 }
 
 
-void Log::Write(const char* message, size_t size)
+void Log::WriteRaw(const char* message, size_t size)
 {
     std::lock_guard<std::mutex> lock(logMux);
     fileHandle.write(message, size);

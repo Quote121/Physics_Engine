@@ -22,7 +22,7 @@ ObjectLoader::~ObjectLoader()
 {
 }
 
-void ObjectLoader::LoadMesh(const char* path, std::shared_ptr<MeshObject> mesh_out)
+void ObjectLoader::LoadMesh(const char* path, MeshObject* mesh_out)
 {
     // Load object from file
     // Parse object

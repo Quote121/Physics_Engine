@@ -4,12 +4,12 @@
 #include "time.hpp"
 #include "inputHandler.hpp"
 
-void GameEngine::SetCurrentRenderTarget(std::shared_ptr<Renderer> renderer)
+void GameEngine::SetCurrentRenderTarget(Renderer* renderer)
 {
     m_renderTarget = renderer;
 }
 
-std::shared_ptr<Renderer> GameEngine::GetCurrentRenderTarget()
+Renderer* GameEngine::GetCurrentRenderTarget()
 {
     return m_renderTarget;
 }
@@ -22,12 +22,12 @@ void GameEngine::Init()
     GameObjectFactory::RegisterObject(GameObjectType::CAMERAOBJECT, CameraObject::Create);
 
     // We can then create an object like so:
-    m_meshObject = std::static_pointer_cast<MeshObject>(GameObjectFactory::CreateObject(GameObjectType::MESHOBJECT));
+    m_meshObject = dynamic_cast<MeshObject*>(GameObjectFactory::CreateObject(GameObjectType::MESHOBJECT));
     auto cameraObject = GameObjectFactory::CreateObject(GameObjectType::CAMERAOBJECT);
 
     ObjectLoader::LoadMesh("./assets/models/teapot/teapot.obj", m_meshObject);
 
-    // this->SetCurrentRenderTarget(cameraObject->GetComponent<RendererComponent>()->renderer);
+    SetCurrentRenderTarget(cameraObject->GetComponent<RendererComponent>()->GetRenderer());
 
     // std::dynamic_pointer_cast<MeshObject>(ourMeshObject)->MeshPrint();
 }
