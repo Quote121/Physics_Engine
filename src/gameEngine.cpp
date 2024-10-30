@@ -62,7 +62,7 @@ void GameEngine::GameLoop()
     //
     // <\Temp>
     //
-    m_meshObject->GetComponent<PositionComponent>()->m_position = {0, 0, 5};
+    m_meshObject->GetComponent<PositionComponent>()->m_position = {0, 0, 20};
     while (!Screen::s_GetQuitStatus())
     {
         Time::UpdateFrameTime();
@@ -75,7 +75,6 @@ void GameEngine::GameLoop()
         // shader3.Use();
 
         this->GetCurrentRenderTarget()->DrawArrays(&m_meshObject->m_VAO, m_meshObject->m_indices.size());
-        // glDrawArrays(GL_TRIANGLES, 0, 3);
 
         Screen::s_SwapWindow();
 

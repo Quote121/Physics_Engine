@@ -1,7 +1,7 @@
 // #include "vertexBuffer.hpp"
 #include "vertexArray.hpp"
 #include <glad/glad.h>
-
+#include "log.hpp"
 
 VertexArray::VertexArray(void)
 {
@@ -29,6 +29,7 @@ void VertexArray::AddBuffer(const VertexBuffer* vb, const VertexBufferLayout* vb
         int layoutIndex = element.layout;
         if (layoutIndex == -1)
             layoutIndex = i;
+        Log::Write("Layout index: ", layoutIndex);
 
         glEnableVertexAttribArray(layoutIndex);
         glVertexAttribPointer(layoutIndex, element.count, element.type, element.normalized, vbl->GetStride(), (void*)(intptr_t)(offset));

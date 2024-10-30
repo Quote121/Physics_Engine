@@ -38,7 +38,7 @@ void Renderer::DrawIndices(const VertexArray* vao, const IndexBuffer* ebo, unsig
 void Renderer::DrawArrays(const VertexArray* vao, unsigned int count, unsigned int mode)
 {
     vao->Bind();
-    // glDrawArrays(mode, 0, count);
+    glDrawArrays(mode, 0, count);
 
     HandleErrors();
 }

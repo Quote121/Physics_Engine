@@ -30,6 +30,7 @@ void ObjectLoader::LoadMesh(const char* path, MeshObject* mesh_out)
 
     tinyobj::ObjReaderConfig reader_config;
     tinyobj::ObjReader reader;
+    Log::Write("Loader", "Loading: ", path);
 
 
     if(!reader.ParseFromFile(path, reader_config))
@@ -51,27 +52,29 @@ void ObjectLoader::LoadMesh(const char* path, MeshObject* mesh_out)
     auto& materials = reader.GetMaterials();
 
     // s unused variable here. Not sure if this is supposed to loop "for (auto& s : shapes)" or something
-    // tinyobj::index_t expected_vert_data = shapes[s].mesh.indices[0];
-    tinyobj::index_t expected_vert_data; // To compile
+    tinyobj::index_t expected_vert_data = shapes[0].mesh.indices[0];
+    // tinyobj::index_t expected_vert_data; // To compile
 
     VertexBufferLayout VBL;
 
     if(expected_vert_data.vertex_index >= 0)
     {
         VBL.AddFloat(3);
+        Log::Write("Loader", "Verts");
     }
     if(expected_vert_data.normal_index >= 0)
     {
         VBL.AddFloat(3);
+        Log::Write("Loader", "Floats");
     }
     if(expected_vert_data.texcoord_index >= 0)
     {
         VBL.AddFloat(2);
+        Log::Write("Loader", "TexCoords");
     }
 
 
     std::vector<tinyobj::real_t> vert_elems;
-    VertexBuffer VBO;
     // Loop over shapes
     for (size_t s = 0; s < shapes.size(); s++) {
     // Loop over faces(polygon)
@@ -129,8 +132,8 @@ void ObjectLoader::LoadMesh(const char* path, MeshObject* mesh_out)
             // shapes[s].mesh.material_ids[f];
         }
 
-        VBO.SetData<tinyobj::real_t>(vert_elems.data(), vert_elems.size());
-        mesh_out->m_VAO.AddBuffer(&VBO, &VBL);
+        mesh_out->m_VBO.SetData<tinyobj::real_t>(vert_elems.data(), vert_elems.size());
+        mesh_out->m_VAO.AddBuffer(&mesh_out->m_VBO, &VBL);
     }
 
     /*  Example VAO Usage

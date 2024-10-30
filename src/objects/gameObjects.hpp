@@ -158,6 +158,8 @@ public:
 
     void MeshPrint() {}
     VertexArray m_VAO;
+    VertexBuffer m_VBO;
+
     MeshObject(glm::vec3 position = {0,0,0}, const char* objFile = nullptr)
     {
         // Construct component with non-default data
