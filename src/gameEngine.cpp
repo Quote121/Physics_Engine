@@ -3,6 +3,7 @@
 #include "renderer/shader.hpp"
 #include "time.hpp"
 #include "inputHandler.hpp"
+#include "command.hpp"
 
 void GameEngine::SetCurrentRenderTarget(Renderer* renderer)
 {
@@ -27,7 +28,8 @@ void GameEngine::Init()
 
     // this->SetCurrentRenderTarget(cameraObject->GetComponent<RendererComponent>()->renderer);
 
-    // std::dynamic_pointer_cast<MeshObject>(ourMeshObject)->MeshPrint();
+
+    Command::ParseFile("configs/startup.cfg");
 }
 
 
